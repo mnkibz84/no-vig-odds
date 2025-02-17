@@ -26,8 +26,10 @@ def get_no_vig_odds_multiway(odds, accuracy=3):
             f_dash += (inv_o ** c) * (-inv_o.ln())  # ln = naturliga logaritmen
         
         if abs(f_dash) < Decimal('1E-10'):
-            st.warning("Numerisk instabilitet upptäckt, använder fallback-metod.")
-            return [round(o / sum(1/o for o in odds), accuracy) for o in odds]
+            st.warning("Numerisk instabilitet upptäckt, använder justerad fallback-metod.")
+            avg_prob = sum(1/o for o in odds)
+            fair_odds = [round((1 / (1/o / avg_prob)), accuracy) for o in odds]
+            return fair_odds
         
         h = -f / f_dash
         c += h
